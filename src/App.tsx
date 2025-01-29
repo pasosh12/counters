@@ -5,50 +5,57 @@ import {Display} from "./Display";
 import {SettingsDisplay} from "./SettingsDisplay";
 
 function App() {
-    const minCounter=0;
-    const maxCounter = 5;
+    const minCounter: number = Number(localStorage.getItem('minCounter')) || 0;
+    const maxCounter: number = Number(localStorage.getItem('maxCounter')) || 5;
     const [counter, setCounter] = React.useState<number>(0);
     const [startValue, setStartValue] = React.useState<number>(minCounter);
     const [maxValue, setMaxValue] = React.useState<number>(maxCounter);
     const [limitFlag, setLimitFlag] = React.useState<boolean>(false);
     const [errorFlag, setErrorFlag] = React.useState<boolean>(false);
+    const [isMessageActive, setMessageActive] = React.useState<boolean>(true);
+    const [buttonsDisabled, setButtonsDisabling] = React.useState<boolean>(false);
     const isResetDisabled = counter === 0
     const isIncDisabled = counter === maxCounter;
 
+    React.useEffect(() => {
+        if (counter === maxCounter) setLimitFlag(true);
+        else setLimitFlag(false);
+    }, [counter])
+
     const onIncHandler = () => {
-        if (counter < maxCounter) {
-            setCounter(counter + 1);
-        }
-        if (counter === maxCounter-1) {
-            setLimitFlag(true)
-        }
+        if (counter < maxCounter) setCounter(counter + 1);
     }
     const onResetHandler = () => {
-        setCounter(0)
-        setLimitFlag(false);
-        // setMaxValue(Math.floor(Math.random() * (10-1)+1));
+        setCounter(minCounter)
     }
-    const disablingButtons=()=>{
-
+    const disablingButtons = (isSet: boolean) => {
+        if (localStorage.getItem('maxCounter') && localStorage.getItem('minCounter')) {
+            setButtonsDisabling(isSet)
+        }
     }
-    const OutputDisplayProps = {onResetHandler,onIncHandler, isIncDisabled, isResetDisabled}
-    const SettingsDisplayProps = {startValue,setStartValue,maxValue,setMaxValue, setCounter}
+    const SettingsDisplayFlagsSettersProps = {setStartValue,setCounter,setMaxValue,setErrorFlag, disablingButtons}
+    const OutputDisplayFlagsProps = {errorFlag, limitFlag, isIncDisabled, isResetDisabled}
     return (
         <div className="App">
             <div className="container">
-
                 <div className="settings_window">
-                    <SettingsDisplay setErrorFlag={setErrorFlag} {...SettingsDisplayProps} />
+                    <SettingsDisplay startValue={startValue}
+                                     maxValue={maxValue}
+                                     errorFlag={errorFlag}
+                                     // setMaxValue={setMaxValue}
+                                     setMessageActive={setMessageActive}
+                                     {...SettingsDisplayFlagsSettersProps} />
                 </div>
-                    <div className="counter_window">
-                        <Display limitFlag={limitFlag} errorFlag={errorFlag}
-                                 counter={counter} maxValue={maxValue}
-                                 disablingButtons={disablingButtons}
-                                 {...OutputDisplayProps}/>
-                    </div>
+                <div className="counter_window">
+                    <Display onIncHandler={onIncHandler} onResetHandler={onResetHandler}
+                             counter={counter}
+                             isMessageActive={isMessageActive}
+                             buttonsDisabled={buttonsDisabled}
+                             {...OutputDisplayFlagsProps}/>
                 </div>
             </div>
-            );
-            }
+        </div>
+    );
+}
 
-            export default App;
+export default App

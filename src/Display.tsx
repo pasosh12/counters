@@ -1,33 +1,37 @@
-// @flow
-
 import React from "react";
 import {Button} from "./Button";
 
 type Props = {
     limitFlag: boolean;
     counter: number;
-    maxValue: number;
-    onIncHandler:() => void;
-    onResetHandler:() => void;
-    isResetDisabled:boolean;
-    isIncDisabled:boolean,
-    errorFlag:boolean;
+    onIncHandler: () => void;
+    onResetHandler: () => void;
+    isResetDisabled: boolean;
+    isIncDisabled: boolean;
+    buttonsDisabled: boolean;
+    errorFlag: boolean;
+    isMessageActive: boolean;
 };
-export const Display = ({maxValue, counter, limitFlag, onResetHandler, onIncHandler, isResetDisabled, isIncDisabled,errorFlag}: Props) => {
+export const Display = ({
+                            counter, limitFlag, onResetHandler, onIncHandler,
+                            isResetDisabled, isIncDisabled, errorFlag, buttonsDisabled,
+                            isMessageActive
+                        }: Props) => {
     return (
         <div className="display">
 
             {errorFlag ? <div className={"error"}>Invalid values</div> :
-                <div className={limitFlag ? "error" : ''}>{counter}</div>}
+                (isMessageActive ? <div>enter values and press 'set'</div> :
+                    <div className={limitFlag ? "error" : ''}>{counter}</div>
+                )
+            }
             <br/>
-            <div>Max Value: {maxValue}</div>
-
             <div className="buttons">
-                <Button className={isIncDisabled ? 'button_disabled' : 'button'} title={'Inc'}
-                        onClick={onIncHandler} disabled={isIncDisabled}/>
-                <Button className={isResetDisabled || counter === 0 ? 'button_disabled' : 'button'}
+                <Button className={isIncDisabled || buttonsDisabled ? 'button_disabled' : 'button'} title={'Inc'}
+                        onClick={onIncHandler} disabled={buttonsDisabled || isIncDisabled}/>
+                <Button className={isResetDisabled || counter === 0 || buttonsDisabled ? 'button_disabled' : 'button'}
                         title={'Reset'}
-                        onClick={onResetHandler} disabled={isResetDisabled}/>
+                        onClick={onResetHandler} disabled={buttonsDisabled || isResetDisabled}/>
             </div>
         </div>
     )
