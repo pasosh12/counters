@@ -18,20 +18,22 @@ export const Display = ({
                             isMessageActive
                         }: Props) => {
     return (
-        <div className="display">
-
-            {errorFlag ? <div className={"error"}>Invalid values</div> :
-                (isMessageActive ? <div>enter values and press 'set'</div> :
-                    <div className={limitFlag ? "error" : ''}>{counter}</div>
-                )
-            }
-            <br/>
+        <div>
+            <div className="display">
+                {errorFlag ? <div className={"error"}>Invalid values</div> :
+                    (isMessageActive ? <div>enter values and press 'set'</div> :
+                            <div className={limitFlag ? "error" : ''}>{counter}</div>
+                    )
+                }
+                <br/>
+            </div>
             <div className="buttons">
                 <Button className={isIncDisabled || buttonsDisabled ? 'button_disabled' : 'button'} title={'Inc'}
                         onClick={onIncHandler} disabled={buttonsDisabled || isIncDisabled}/>
-                <Button className={isResetDisabled || counter === 0 || buttonsDisabled ? 'button_disabled' : 'button'}
-                        title={'Reset'}
-                        onClick={onResetHandler} disabled={buttonsDisabled || isResetDisabled}/>
+                <Button
+                    className={isResetDisabled || counter === 0 || buttonsDisabled ? 'button_disabled' : 'button'}
+                    title={'Reset'}
+                    onClick={onResetHandler} disabled={buttonsDisabled || isResetDisabled}/>
             </div>
         </div>
     )

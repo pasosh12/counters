@@ -1,10 +1,16 @@
 body {
     background-color: #292C35;
+    height: 100%;
 }
 
 .container {
-    max-width: 250px;
-    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    gap: 50px;
 }
 
 .counter_window {
@@ -12,7 +18,11 @@ body {
     border-radius: 10px;
     padding: 20px;
 }
-
+.settings_window {
+    border: 1px solid #63DBFD;
+    border-radius: 10px;
+    padding: 20px;
+}
 .display {
     /*background-color: #63DBFD;*/
     background-color: #292C35;
@@ -34,8 +44,12 @@ body {
         color: red;
     }
 }
-
+.input{
+    width: 100px;
+    border-radius: 5px;
+}
 .buttons {
+    min-width:150px;
     display: flex;
     justify-content: center;
     align-content: center;

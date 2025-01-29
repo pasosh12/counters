@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Button} from "./Button";
-import {Dispatch, SetStateAction, useRef} from "react";
+import {Dispatch, SetStateAction} from "react";
 
 type Props = {
     startValue: number,
@@ -62,17 +62,24 @@ export const SettingsDisplay = ({
     }
 
     return (
-        <div className="display">
-            max value
-            <input className={errorFlag ? 'error_input' : ''} type={"number"}
-                   onChange={(e) => maxHandler(Number(e.currentTarget.value))}
-                   value={localMax}/>
-            start value
-            <input className={errorFlag ? 'error_input' : ''} type={"number"}
-                   onChange={(e) => startHandler(Number(e.currentTarget.value))}
-                   value={localStart}/>
+        <div>
+            <div className="display">
+                <div className="display_row">
+                    max value
+                    <input className={`input ${errorFlag ? 'error_input' : ''}`} type={"number"}
+                           onChange={(e) => maxHandler(Number(e.currentTarget.value))}
+                           value={localMax}/>
+                </div>
+                <div className="display_row">
+
+                    start value
+                    <input className={`input ${errorFlag ? 'error_input' : ''}`} type={"number"}
+                           onChange={(e) => startHandler(Number(e.currentTarget.value))}
+                           value={localStart}/>
+                </div>
+            </div>
             <div className="buttons">
-                <Button title={'set'} className={isSetButtonActive ? '' : ''}
+                <Button title={'set'} className={`button ${isSetButtonActive ? '' : 'button_disabled'}`}
                         disabled={!isSetButtonActive} onClick={onSetHandler}/>
             </div>
         </div>
