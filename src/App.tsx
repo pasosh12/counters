@@ -4,14 +4,14 @@ import {Display} from "./Display";
 import {SettingsDisplay} from "./SettingsDisplay";
 
 function App() {
-    const minCounter: number = Number(localStorage.getItem('minCounter')) || 0;
+    const minCounter: number = Number(localStorage.getItem('minCounter'));
     const maxCounter: number = Number(localStorage.getItem('maxCounter')) || 5;
     const [counter, setCounter] = React.useState<number>(0);
     const [startValue, setStartValue] = React.useState<number>(minCounter);
     const [maxValue, setMaxValue] = React.useState<number>(maxCounter);
     const [limitFlag, setLimitFlag] = React.useState<boolean>(false);
     const [errorFlag, setErrorFlag] = React.useState<boolean>(false);
-    const [isMessageActive, setMessageActive] = React.useState<boolean>(true);
+    const [isMessageActive, setMessageActive] = React.useState<boolean>(false);
     const [buttonsDisabled, setButtonsDisabling] = React.useState<boolean>(false);
     const isIncDisabled = counter === maxCounter;
     const isResetDisabled = counter === 0
@@ -41,7 +41,6 @@ function App() {
                     <SettingsDisplay startValue={startValue}
                                      maxValue={maxValue}
                                      errorFlag={errorFlag}
-                                     // setMaxValue={setMaxValue}
                                      setMessageActive={setMessageActive}
                                      {...SettingsDisplayFlagsSettersProps} />
                 </div>

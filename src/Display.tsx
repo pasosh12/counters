@@ -17,11 +17,6 @@ export const Display = ({
                             isResetDisabled, isIncDisabled, errorFlag, buttonsDisabled,
                             isMessageActive
                         }: Props) => {
-    console.log('isIncDisabled',isIncDisabled)
-    console.log('isResetDisabled',isResetDisabled)
-    console.log('buttonsDisabled',buttonsDisabled)
-    console.log('isIncDisabled && buttonsDisabled',(isIncDisabled && buttonsDisabled))
-    console.log('isResetDisabled && buttonsDisabled',(isResetDisabled && buttonsDisabled))
     return (
         <div>
             <div className="display">
@@ -35,7 +30,7 @@ export const Display = ({
             </div>
 
             <div className="buttons_container">
-                <Button className={`button ${isIncDisabled || buttonsDisabled ? 'button_disabled' : ''}`} title={'Inc'}
+                <Button className={`button ${isIncDisabled && buttonsDisabled ? 'button_disabled' : ''}`} title={'Inc'}
                         onClick={onIncHandler} disabled={buttonsDisabled || isIncDisabled}/>
                 <Button
                     className={`button ${isResetDisabled && buttonsDisabled ? 'button_disabled' : ''}`}

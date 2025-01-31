@@ -43,6 +43,7 @@ body {
     .counter {
         text-align: center;
         margin: 0 auto;
+        font-size: 38px;
     }
 
     .error_input {
@@ -66,7 +67,7 @@ body {
 
 .input {
     width: 138px;
-    height: 28px;
+    height: 38px;
     border-radius: 5px;
     font-size: 20px;
     text-align: center;
