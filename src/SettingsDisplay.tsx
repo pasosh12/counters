@@ -30,12 +30,13 @@ export const SettingsDisplay = ({
 
     React.useEffect(() => {
         setErrorFlag(localStart >= localMax || localStart < 0 || localMax < 0)
-    }, [localStart, localMax]);
+    }, [localStart, localMax, setErrorFlag]);
 
     const changingValues = () => {
         disablingButtons(true)
         activateSetButton(true)
         setMessageActive(true)
+        setCounter(0)
         localStorage.removeItem('minCounter');
         localStorage.removeItem('maxCounter');
     }
@@ -65,20 +66,19 @@ export const SettingsDisplay = ({
         <div>
             <div className="display">
                 <div className="display_row">
-                    max value
+                    <p>max value</p>
                     <input className={`input ${errorFlag ? 'error_input' : ''}`} type={"number"}
                            onChange={(e) => maxHandler(Number(e.currentTarget.value))}
                            value={localMax}/>
                 </div>
                 <div className="display_row">
-
-                    start value
-                    <input className={`input ${errorFlag ? 'error_input' : ''}`} type={"number"}
-                           onChange={(e) => startHandler(Number(e.currentTarget.value))}
-                           value={localStart}/>
+                    <p>start value</p>
+                        <input className={`input ${errorFlag ? 'error_input' : ''}`} type={"number"}
+                               onChange={(e) => startHandler(Number(e.currentTarget.value))}
+                               value={localStart}/>
                 </div>
             </div>
-            <div className="buttons">
+            <div className="buttons_container">
                 <Button title={'set'} className={`button ${isSetButtonActive ? '' : 'button_disabled'}`}
                         disabled={!isSetButtonActive} onClick={onSetHandler}/>
             </div>

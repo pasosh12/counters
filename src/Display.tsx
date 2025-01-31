@@ -17,23 +17,30 @@ export const Display = ({
                             isResetDisabled, isIncDisabled, errorFlag, buttonsDisabled,
                             isMessageActive
                         }: Props) => {
+    console.log('isIncDisabled',isIncDisabled)
+    console.log('isResetDisabled',isResetDisabled)
+    console.log('buttonsDisabled',buttonsDisabled)
+    console.log('isIncDisabled && buttonsDisabled',(isIncDisabled && buttonsDisabled))
+    console.log('isResetDisabled && buttonsDisabled',(isResetDisabled && buttonsDisabled))
     return (
         <div>
             <div className="display">
+                <div className={'counter'}>
                 {errorFlag ? <div className={"error"}>Invalid values</div> :
                     (isMessageActive ? <div>enter values and press 'set'</div> :
                             <div className={limitFlag ? "error" : ''}>{counter}</div>
                     )
                 }
-                <br/>
+                </div>
             </div>
-            <div className="buttons">
-                <Button className={isIncDisabled || buttonsDisabled ? 'button_disabled' : 'button'} title={'Inc'}
+
+            <div className="buttons_container">
+                <Button className={`button ${isIncDisabled || buttonsDisabled ? 'button_disabled' : ''}`} title={'Inc'}
                         onClick={onIncHandler} disabled={buttonsDisabled || isIncDisabled}/>
                 <Button
-                    className={isResetDisabled || counter === 0 || buttonsDisabled ? 'button_disabled' : 'button'}
+                    className={`button ${isResetDisabled && buttonsDisabled ? 'button_disabled' : ''}`}
                     title={'Reset'}
-                    onClick={onResetHandler} disabled={buttonsDisabled || isResetDisabled}/>
+                    onClick={onResetHandler} disabled={(buttonsDisabled || isResetDisabled)}/>
             </div>
         </div>
     )

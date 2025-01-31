@@ -1,3 +1,9 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background-color: #292C35;
     height: 100%;
@@ -5,58 +11,78 @@ body {
 
 .container {
     display: flex;
+    height: 100vh;
     flex-direction: row;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    justify-content: center;
+    align-items: center;
     gap: 50px;
+    flex-wrap: wrap;
 }
 
-.counter_window {
+.counter_window,.settings_window {
     border: 1px solid #63DBFD;
     border-radius: 10px;
     padding: 20px;
 }
-.settings_window {
-    border: 1px solid #63DBFD;
-    border-radius: 10px;
-    padding: 20px;
-}
+
 .display {
-    /*background-color: #63DBFD;*/
+    width: 300px;
     background-color: #292C35;
     border: 1px solid #63DBFD;
-    margin: 10px auto;
     border-radius: 10px;
-    min-height: 100px;
+    min-height: 300px;
+    max-width: 300px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     color: #63DBFD;
+    padding: 0 10px;
+    font-size: 20px;
+
+    .counter {
+        text-align: center;
+        margin: 0 auto;
+    }
+
     .error_input {
         background-color: red;
         border: 1px solid red;
         color: black;
     }
+
     .error {
         color: red;
     }
+
+    .display_row {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
 }
-.input{
-    width: 100px;
+
+.input {
+    width: 138px;
+    height: 28px;
     border-radius: 5px;
+    font-size: 20px;
+    text-align: center;
 }
-.buttons {
-    min-width:150px;
+
+.buttons_container {
+    min-height: 100px;
+    max-width: 300px;
     display: flex;
     justify-content: center;
-    align-content: center;
+    align-items: center;
     border: 1px solid #63DBFD;
     border-radius: 10px;
     background-color: #292C35;
     gap: 15px;
+    margin: 10px 0;
     padding: 10px 0;
 }
 
@@ -64,10 +90,18 @@ body {
     background-color: #63DBFD;
     border: #63DBFD;
     border-radius: 10px;
+    width: 100px;
+    min-height: 50px;
+    font-size: 25px;
+    font-weight: bold;
 }
 
 .button_disabled {
     opacity: 0.5;
-    border: none;
-    border-radius: 10px;
+    cursor: not-allowed;
+}
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
 }

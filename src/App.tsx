@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import {Button} from './Button';
 import {Display} from "./Display";
 import {SettingsDisplay} from "./SettingsDisplay";
 
@@ -14,13 +13,13 @@ function App() {
     const [errorFlag, setErrorFlag] = React.useState<boolean>(false);
     const [isMessageActive, setMessageActive] = React.useState<boolean>(true);
     const [buttonsDisabled, setButtonsDisabling] = React.useState<boolean>(false);
-    const isResetDisabled = counter === 0
     const isIncDisabled = counter === maxCounter;
+    const isResetDisabled = counter === 0
 
     React.useEffect(() => {
         if (counter === maxCounter) setLimitFlag(true);
         else setLimitFlag(false);
-    }, [counter])
+    }, [counter, maxCounter])
 
     const onIncHandler = () => {
         if (counter < maxCounter) setCounter(counter + 1);
