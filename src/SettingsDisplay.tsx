@@ -1,6 +1,11 @@
 import * as React from 'react';
 import {Button} from "./Button";
-import {Dispatch, SetStateAction} from "react";
+import {ChangeEvent, Dispatch, SetStateAction} from "react";
+import ExampleNumberField from "./NumberField";
+// import TextField from '@mui/material/TextField';
+// import { NumberField } from '@base-ui-components/react/number-field';
+// import ExampleNumberField from "./NumberField";
+// import TextInputWithSpinner from "./NumberField";
 
 type Props = {
     startValue: number,
@@ -25,7 +30,7 @@ export const SettingsDisplay = ({
                                 }: Props) => {
     const [localMax, setLocalMax] = React.useState<number>(maxValue);
     const [localStart, setLocalStart] = React.useState<number>(0);
-    const [isSetButtonActive, activateSetButton] = React.useState<boolean>(false);
+    const [isSetButtonActive, activateSetButton] = React.useState<boolean>(true);
 
 
     React.useEffect(() => {
@@ -40,12 +45,21 @@ export const SettingsDisplay = ({
         localStorage.removeItem('minCounter');
         localStorage.removeItem('maxCounter');
     }
-    const maxHandler = (value: number) => {
-        setLocalMax(Number(value))
+    const inputValueFiltering = (numberToFilter: string) => {
+        console.log(typeof numberToFilter)
+        let filteredValue = numberToFilter.replace(/[^0-9]/g, '')//delete all symbols except numbers 0-9
+        filteredValue = filteredValue.replace(/^0+/, '') //delete all zeros before number
+        return Number(filteredValue)
+
+    }
+    const maxHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const inputValue = event.target.value
+        setLocalMax(inputValueFiltering(inputValue))
         changingValues()
     }
-    const startHandler = (value: number) => {
-        setLocalStart(Number(value))
+    const startHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const inputValue = event.target.value
+        setLocalStart(inputValueFiltering(inputValue))
         changingValues()
     }
 
@@ -67,15 +81,28 @@ export const SettingsDisplay = ({
             <div className="display">
                 <div className="display_row">
                     <p>max value</p>
-                    <input className={`input ${errorFlag ? 'error_input' : ''}`} type={"number"}
-                           onChange={(e) => maxHandler(Number(e.currentTarget.value))}
-                           value={localMax}/>
+                    <ExampleNumberField defaultValue={localMax} onValueChange={maxHandler} />
+                    {/*<TextInputWithSpinner/>*/}
+                    {/*<TextField className={`input ${errorFlag ? 'error_input' : ''}`}*/}
+                    {/*           type={"number"}*/}
+                    {/*           onChange={maxHandler}*/}
+                    {/*           value={localMax}*/}
+                    {/*           inputProps={{min: '0'}}/>*/}
+
+                    {/*/>*/}
+                    {/*<input className={`input ${errorFlag ? 'error_input' : ''}`} type={"number"}*/}
+                    {/*       onChange={maxHandler}*/}
+                    {/*       value={localMax}*/}
+                    {/*       min='0'*/}
+                    {/*/>*/}
                 </div>
                 <div className="display_row">
                     <p>start value</p>
-                        <input className={`input ${errorFlag ? 'error_input' : ''}`} type={"number"}
-                               onChange={(e) => startHandler(Number(e.currentTarget.value))}
-                               value={localStart}/>
+                    <input className={`input ${errorFlag ? 'error_input' : ''}`}
+                           type={"number"}
+                           onChange={startHandler}
+                           value={localStart}
+                           min='0'/>
                 </div>
             </div>
             <div className="buttons_container">
