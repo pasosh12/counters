@@ -6,26 +6,21 @@ type Props = {
     counter: number;
     onIncHandler: () => void;
     onResetHandler: () => void;
-    // isResetDisabled: boolean;
-    // isIncDisabled: boolean;
     buttonsDisabled: boolean;
     errorFlag: boolean;
     isMessageActive: boolean;
-    maxCounter:number;
+    maxCounter: number;
     setLimitFlag: Dispatch<SetStateAction<boolean>>;
 };
 export const Display = ({
                             counter, limitFlag, onResetHandler, onIncHandler,
-                            // isResetDisabled, isIncDisabled,
                             errorFlag, buttonsDisabled,
                             isMessageActive,
                             setLimitFlag,
-    maxCounter,
+                            maxCounter,
                         }: Props) => {
-    // const isIncDisabled = counter === maxCounter;
-    // const isResetDisabled = counter === 0
     const [isIncDisabled, setIncDisabled] = useState(true);
-    const [isResetDisabled,setResetDisabled] = useState(true)
+    const [isResetDisabled, setResetDisabled] = useState(true)
 
     React.useEffect(() => {
 
@@ -33,29 +28,27 @@ export const Display = ({
             setLimitFlag(true);
             setIncDisabled(true);
             setResetDisabled(false)
-        }
-        else if(counter === 0){
+        } else if (counter === 0) {
             setLimitFlag(false);
             setIncDisabled(false);
             setResetDisabled(true)
-        }
-        else {
+        } else {
             setLimitFlag(false);
             setIncDisabled(false);
             setResetDisabled(false)
         }
     }, [counter, maxCounter])
 
-    console.log(buttonsDisabled)
+
     return (
         <div>
             <div className="display">
                 <div className={'counter'}>
-                {errorFlag ? <div className={"error"}>Invalid values</div> :
-                    (isMessageActive ? <div>enter values and press 'set'</div> :
-                            <div className={limitFlag ? "error" : ''}>{counter}</div>
-                    )
-                }
+                    {errorFlag ? <div className={"error"}>Invalid values</div> :
+                        (isMessageActive ? <div>enter values and press 'set'</div> :
+                                <div className={limitFlag ? "error" : ''}>{counter}</div>
+                        )
+                    }
                 </div>
             </div>
 
