@@ -1,11 +1,7 @@
 import * as React from 'react';
 import {Button} from "./Button";
-import {ChangeEvent, Dispatch, SetStateAction} from "react";
-import ExampleNumberField from "./NumberField";
-// import TextField from '@mui/material/TextField';
-// import { NumberField } from '@base-ui-components/react/number-field';
-// import ExampleNumberField from "./NumberField";
-// import TextInputWithSpinner from "./NumberField";
+import {ChangeEvent, Dispatch, SetStateAction, KeyboardEvent} from "react";
+
 
 type Props = {
     startValue: number,
@@ -15,7 +11,7 @@ type Props = {
     setCounter: Dispatch<SetStateAction<number>>,
     errorFlag: boolean,
     setErrorFlag: Dispatch<SetStateAction<boolean>>,
-    disablingButtons: (isSet: boolean) => void,
+    disablingDisplayButtons: (isSet: boolean) => void,
     setMessageActive: Dispatch<SetStateAction<boolean>>,
 };
 
@@ -25,53 +21,68 @@ export const SettingsDisplay = ({
                                     errorFlag,
                                     setCounter,
                                     setErrorFlag,
-                                    disablingButtons,
+                                    disablingDisplayButtons,
                                     setMessageActive
                                 }: Props) => {
-    const [localMax, setLocalMax] = React.useState<number>(maxValue);
-    const [localStart, setLocalStart] = React.useState<number>(0);
+    const [localMax, setLocalMax] = React.useState<string>(maxValue.toString());
+    const [localStart, setLocalStart] = React.useState<string>('0');
     const [isSetButtonActive, activateSetButton] = React.useState<boolean>(true);
 
-
     React.useEffect(() => {
-        setErrorFlag(localStart >= localMax || localStart < 0 || localMax < 0)
+        let lStart = Number(localStart)
+        let lMax = Number(localMax)
+        let isInputError = lStart >= lMax || lStart < 0 || lMax < 0
+        console.log(isInputError)
+        setErrorFlag(isInputError)
+        activateSetButton(!isInputError)
+        // if (Number(localStart) >= Number(localMax) || Number(localStart) < 0 || Number(localMax) < 0) {
+        //     setErrorFlag(true)
+        //     activateSetButton(false)
+        // } else {
+        //     setErrorFlag(false)
+        //     activateSetButton(true)
+        // }
+
     }, [localStart, localMax, setErrorFlag]);
 
     const changingValues = () => {
-        disablingButtons(true)
-        activateSetButton(true)
+        disablingDisplayButtons(true)
         setMessageActive(true)
         setCounter(0)
         localStorage.removeItem('minCounter');
         localStorage.removeItem('maxCounter');
-    }
-    const inputValueFiltering = (numberToFilter: string) => {
-        console.log(typeof numberToFilter)
-        let filteredValue = numberToFilter.replace(/[^0-9]/g, '')//delete all symbols except numbers 0-9
-        filteredValue = filteredValue.replace(/^0+/, '') //delete all zeros before number
-        return Number(filteredValue)
 
     }
-    const maxHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const inputValue = event.target.value
-        setLocalMax(inputValueFiltering(inputValue))
-        changingValues()
+    const inputValueFiltering = (numberToFilter: string) => {
+        // Удаляем точки и запятые
+        let filteredValue = numberToFilter.replace(/[.,]/g, '');
+        // Удаляем ведущие нули
+        filteredValue = filteredValue.replace(/^0+/, '');
+        // Если строка пустая, возвращаем '0'
+        return filteredValue === '' ? '0' : filteredValue;
     }
-    const startHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onKeyPressHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+        // Запрещаем ввод точки
+        if (event.key === '.') {
+            event.preventDefault();
+        }
+    };
+    const valuesSetterHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value
-        setLocalStart(inputValueFiltering(inputValue))
+        if (event.target.id === 'start') setLocalStart(inputValueFiltering(inputValue))
+        else if (event.target.id === 'max') setLocalMax(inputValueFiltering(inputValue))
         changingValues()
     }
 
     const onSetHandler = () => {
 
         if (!errorFlag) { //error
-            setStartValue(localStart)
-            setCounter(localStart)
+            setStartValue(Number(localStart))
+            setCounter(Number(localStart))
+            activateSetButton(false)
             localStorage.setItem('minCounter', String(localStart));
             localStorage.setItem('maxCounter', String(localMax));
-            disablingButtons(false)
-            activateSetButton(false)
+            disablingDisplayButtons(false)
             setMessageActive(false)
         }
     }
@@ -81,33 +92,33 @@ export const SettingsDisplay = ({
             <div className="display">
                 <div className="display_row">
                     <p>max value</p>
-                    <ExampleNumberField defaultValue={localMax} onValueChange={maxHandler} />
-                    {/*<TextInputWithSpinner/>*/}
-                    {/*<TextField className={`input ${errorFlag ? 'error_input' : ''}`}*/}
-                    {/*           type={"number"}*/}
-                    {/*           onChange={maxHandler}*/}
-                    {/*           value={localMax}*/}
-                    {/*           inputProps={{min: '0'}}/>*/}
-
-                    {/*/>*/}
-                    {/*<input className={`input ${errorFlag ? 'error_input' : ''}`} type={"number"}*/}
-                    {/*       onChange={maxHandler}*/}
-                    {/*       value={localMax}*/}
-                    {/*       min='0'*/}
-                    {/*/>*/}
+                    <input className={`input ${errorFlag ? 'error_input' : ''}`}
+                           type={"number"}
+                           onChange={valuesSetterHandler}
+                           value={localMax.toString()}
+                           id="max"
+                           pattern="\d*"
+                           onKeyDown={onKeyPressHandler}
+                    />
                 </div>
                 <div className="display_row">
                     <p>start value</p>
                     <input className={`input ${errorFlag ? 'error_input' : ''}`}
                            type={"number"}
-                           onChange={startHandler}
-                           value={localStart}
-                           min='0'/>
+                           onChange={valuesSetterHandler}
+                           value={localStart.toString()}
+                           id="start"
+                           pattern="\d*"
+                           onKeyDown={onKeyPressHandler}
+
+                    />
                 </div>
             </div>
             <div className="buttons_container">
-                <Button title={'set'} className={`button ${isSetButtonActive ? '' : 'button_disabled'}`}
-                        disabled={!isSetButtonActive} onClick={onSetHandler}/>
+                <Button title={'set'}
+                        className={`button ${isSetButtonActive ? '' : 'button_disabled'}`}
+                        disabled={!isSetButtonActive}
+                        onClick={onSetHandler}/>
             </div>
         </div>
     )
