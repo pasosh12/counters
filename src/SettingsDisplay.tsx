@@ -32,16 +32,8 @@ export const SettingsDisplay = ({
         let lStart = Number(localStart)
         let lMax = Number(localMax)
         let isInputError = lStart >= lMax || lStart < 0 || lMax < 0
-        console.log(isInputError)
         setErrorFlag(isInputError)
         activateSetButton(!isInputError)
-        // if (Number(localStart) >= Number(localMax) || Number(localStart) < 0 || Number(localMax) < 0) {
-        //     setErrorFlag(true)
-        //     activateSetButton(false)
-        // } else {
-        //     setErrorFlag(false)
-        //     activateSetButton(true)
-        // }
 
     }, [localStart, localMax, setErrorFlag]);
 
