@@ -11,13 +11,14 @@ type Props = {
     setCounter: Dispatch<SetStateAction<number>>,
     errorFlag: boolean,
     setErrorFlag: Dispatch<SetStateAction<boolean>>,
-    disablingDisplayButtons: (isSet: boolean) => void,
+    disablingDisplayButtons: (buttonsActive: boolean) => void,
     setMessageActive: Dispatch<SetStateAction<boolean>>,
 };
 
 export const SettingsDisplay = ({
                                     setStartValue,
                                     maxValue,
+                                    startValue,
                                     errorFlag,
                                     setCounter,
                                     setErrorFlag,
@@ -25,7 +26,7 @@ export const SettingsDisplay = ({
                                     setMessageActive
                                 }: Props) => {
     const [localMax, setLocalMax] = React.useState<string>(maxValue.toString());
-    const [localStart, setLocalStart] = React.useState<string>('0');
+    const [localStart, setLocalStart] = React.useState<string>(startValue.toString());
     const [isSetButtonActive, activateSetButton] = React.useState<boolean>(true);
 
     React.useEffect(() => {

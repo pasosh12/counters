@@ -19,8 +19,8 @@ export const Display = ({
                             setLimitFlag,
                             maxCounter,
                         }: Props) => {
-    const [isIncDisabled, setIncDisabled] = useState(true);
-    const [isResetDisabled, setResetDisabled] = useState(true)
+    const [incDisabled, setIncDisabled] = useState(true);
+    const [resetDisabled, setResetDisabled] = useState(true)
 
     React.useEffect(() => {
 
@@ -53,13 +53,13 @@ export const Display = ({
             </div>
 
             <div className="buttons_container">
-                <Button className={`button ${isIncDisabled || buttonsDisabled ? 'button_disabled' : ''}`}
+                <Button className={`button ${incDisabled || buttonsDisabled ? 'button_disabled' : ''}`}
                         title={'Inc'}
-                        onClick={onIncHandler} disabled={(buttonsDisabled || isIncDisabled)}/>
+                        onClick={onIncHandler} disabled={(buttonsDisabled || incDisabled)}/>
                 <Button
-                    className={`button ${isResetDisabled || buttonsDisabled ? 'button_disabled' : ''}`}
+                    className={`button ${resetDisabled || buttonsDisabled ? 'button_disabled' : ''}`}
                     title={'Reset'}
-                    onClick={onResetHandler} disabled={(buttonsDisabled || isResetDisabled)}/>
+                    onClick={onResetHandler} disabled={(buttonsDisabled || resetDisabled)}/>
             </div>
         </div>
     )
