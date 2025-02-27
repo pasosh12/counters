@@ -10,9 +10,7 @@ function App() {
 
     const [startValue, setStartValue] = useState<number>(minCounter);
     const [maxValue, setMaxValue] = useState<number>(maxCounter);
-    const [limitFlag, setLimitFlag] = useState<boolean>(false);
     const [errorFlag, setErrorFlag] = useState<boolean>(false);
-    const [isMessageActive, setMessageActive] = useState<boolean>(true);
     const [buttonsDisabled, setButtonsDisabling] = useState<boolean>(true);
     const [counter, setCounter] = useState<number>(0);
 
@@ -24,20 +22,18 @@ function App() {
     }
 
     const disablingDisplayButtons = (buttonsActive: boolean) => {
-        if (localStorage.getItem('maxCounter') && localStorage.getItem('minCounter')) {
+        if (startValue && maxValue) {
             setButtonsDisabling(buttonsActive)
         }
     }
-    const SettingsDisplayFlagsSettersProps = {
+    const SettingsDisplaySettersProps = {
         setStartValue,
         setCounter,
         setMaxValue,
         setErrorFlag,
         disablingDisplayButtons
     }
-    const OutputDisplayFlagsProps = {
-        errorFlag, limitFlag, maxCounter, setLimitFlag
-    }
+
     return (
         <div className="App">
             <div className="container">
@@ -45,15 +41,16 @@ function App() {
                     <SettingsDisplay startValue={startValue}
                                      maxValue={maxValue}
                                      errorFlag={errorFlag}
-                                     setMessageActive={setMessageActive}
-                                     {...SettingsDisplayFlagsSettersProps} />
+                                     {...SettingsDisplaySettersProps} />
                 </div>
                 <div className="counter_window">
-                    <Display onIncHandler={onIncHandler} onResetHandler={onResetHandler}
+                    <Display onIncHandler={onIncHandler}
+                             onResetHandler={onResetHandler}
                              counter={counter}
-                             isMessageActive={isMessageActive}
+                             maxCounter={maxCounter}
+                             errorFlag={errorFlag}
                              buttonsDisabled={buttonsDisabled}
-                             {...OutputDisplayFlagsProps}/>
+                             />
                 </div>
             </div>
         </div>

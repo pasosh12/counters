@@ -1,29 +1,25 @@
-import React, {Dispatch, SetStateAction, useState} from "react";
+import React, {useState} from "react";
 import {Button} from "./Button";
 
 type Props = {
-    limitFlag: boolean;
     counter: number;
-    onIncHandler: () => void;
-    onResetHandler: () => void;
+    maxCounter: number;
     buttonsDisabled: boolean;
     errorFlag: boolean;
-    isMessageActive: boolean;
-    maxCounter: number;
-    setLimitFlag: Dispatch<SetStateAction<boolean>>;
+    onIncHandler: () => void;
+    onResetHandler: () => void;
 };
 export const Display = ({
-                            counter, limitFlag, onResetHandler, onIncHandler,
+                            counter,
+                            onResetHandler, onIncHandler,
                             errorFlag, buttonsDisabled,
-                            isMessageActive,
-                            setLimitFlag,
                             maxCounter,
                         }: Props) => {
     const [incDisabled, setIncDisabled] = useState(true);
     const [resetDisabled, setResetDisabled] = useState(true)
+    const [limitFlag, setLimitFlag] = useState<boolean>(false);
 
     React.useEffect(() => {
-
         if (counter === maxCounter) {
             setLimitFlag(true);
             setIncDisabled(true);
@@ -39,13 +35,12 @@ export const Display = ({
         }
     }, [counter, maxCounter])
 
-
     return (
         <div>
             <div className="display">
                 <div className={'counter'}>
                     {errorFlag ? <div className={"error"}>Invalid values</div> :
-                        (isMessageActive ? <div>enter values and press 'set'</div> :
+                        (!errorFlag && buttonsDisabled ? <div>enter values and press 'set'</div> :
                                 <div className={limitFlag ? "error" : ''}>{counter}</div>
                         )
                     }
