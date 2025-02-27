@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {Button} from "./Button";
-import {ChangeEvent, Dispatch, SetStateAction, KeyboardEvent} from "react";
+import {ChangeEvent, Dispatch, SetStateAction} from "react";
+import Input from "./Input";
 
 
 type Props = {
     startValue: number,
-    setStartValue: Dispatch<SetStateAction<number>>,
     maxValue: number,
+    errorFlag: boolean,
+    setStartValue: Dispatch<SetStateAction<number>>,
     setMaxValue: Dispatch<SetStateAction<number>>,
     setCounter: Dispatch<SetStateAction<number>>,
-    errorFlag: boolean,
     setErrorFlag: Dispatch<SetStateAction<boolean>>,
     disablingDisplayButtons: (buttonsActive: boolean) => void,
-    setMessageActive: Dispatch<SetStateAction<boolean>>,
 };
 
 export const SettingsDisplay = ({
@@ -23,7 +23,6 @@ export const SettingsDisplay = ({
                                     setCounter,
                                     setErrorFlag,
                                     disablingDisplayButtons,
-                                    setMessageActive
                                 }: Props) => {
     const [localMax, setLocalMax] = React.useState<string>(maxValue.toString());
     const [localStart, setLocalStart] = React.useState<string>(startValue.toString());
@@ -40,7 +39,6 @@ export const SettingsDisplay = ({
 
     const changingValues = () => {
         disablingDisplayButtons(true)
-        setMessageActive(true)
         setCounter(0)
         localStorage.removeItem('minCounter');
         localStorage.removeItem('maxCounter');
@@ -54,12 +52,7 @@ export const SettingsDisplay = ({
         // Если строка пустая, возвращаем '0'
         return filteredValue === '' ? '0' : filteredValue;
     }
-    const onKeyPressHandler = (event: KeyboardEvent<HTMLInputElement>) => {
-        // Запрещаем ввод точки
-        if (event.key === '.') {
-            event.preventDefault();
-        }
-    };
+
     const valuesSetterHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value
         if (event.target.id === 'start') setLocalStart(inputValueFiltering(inputValue))
@@ -76,36 +69,26 @@ export const SettingsDisplay = ({
             localStorage.setItem('minCounter', String(localStart));
             localStorage.setItem('maxCounter', String(localMax));
             disablingDisplayButtons(false)
-            setMessageActive(false)
         }
     }
 
     return (
         <div>
             <div className="display">
-                <div className="display_row">
-                    <p>max value</p>
-                    <input className={`input ${errorFlag ? 'error_input' : ''}`}
-                           type={"number"}
-                           onChange={valuesSetterHandler}
-                           value={localMax.toString()}
-                           id="max"
-                           pattern="\d*"
-                           onKeyDown={onKeyPressHandler}
-                    />
-                </div>
-                <div className="display_row">
-                    <p>start value</p>
-                    <input className={`input ${errorFlag ? 'error_input' : ''}`}
-                           type={"number"}
-                           onChange={valuesSetterHandler}
-                           value={localStart.toString()}
-                           id="start"
-                           pattern="\d*"
-                           onKeyDown={onKeyPressHandler}
-
-                    />
-                </div>
+                <Input
+                    errorFlag={errorFlag}
+                    title={'max value'}
+                    value={localMax}
+                    id={'max'}
+                    valuesSetterHandler={valuesSetterHandler}
+                />
+                <Input
+                    errorFlag={errorFlag}
+                    title={'min value'}
+                    value={localStart}
+                    id={'start'}
+                    valuesSetterHandler={valuesSetterHandler}
+                />
             </div>
             <div className="buttons_container">
                 <Button title={'set'}
