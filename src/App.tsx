@@ -1,63 +1,79 @@
-import React, {useReducer} from 'react';
+import React, {useReducer, useState} from 'react';
 import './App.css';
 import {Display} from "./Display";
 import {SettingsDisplay} from "./SettingsDisplay";
-import {useState} from "react";
+import {
+    counterReducer,
+    incCounterAC, resetCounterAC,
+    setErrorAC,
+    setValuesAC,
+} from "./model/counter-reducer";
 
-function App() {
-    const minCounter: number = Number(localStorage.getItem('minCounter')) || 0
-    const maxCounter: number = Number(localStorage.getItem('maxCounter')) || 5
+export const App = () => {
 
     const [buttonsDisabled, setButtonsDisabling] = useState<boolean>(true);
 
-    const [errorFlag, setErrorFlag] = useState<boolean>(false);
-    const [counter, setCounter] = useState<number>(0);
-
+    const [state, dispatchToInputValues] = useReducer(counterReducer, {
+        counter: Number(localStorage.getItem('minCounter')) || 0,
+        startValue: Number(localStorage.getItem('minCounter')) || 0,
+        maxValue: Number(localStorage.getItem('maxCounter')) || 5,
+        error: false
+    });
 
     const onIncHandler = () => {
-        if (minCounter < maxCounter){
-            setCounter(counter + 1);
+        if (state.counter < state.maxValue) {
+            dispatchToInputValues(incCounterAC());
         }
     }
+
     const onResetHandler = () => {
-        setCounter(minCounter)
+        dispatchToInputValues(resetCounterAC(state.startValue));
     }
 
     const disablingDisplayButtons = (buttonsActive: boolean) => {
-         setButtonsDisabling(buttonsActive)
+        setButtonsDisabling(buttonsActive);
     }
-    const SettingsDisplaySettersProps = {
 
-        setCounter,
+    const setErrorFlag = (isInputError: boolean) => {
+        dispatchToInputValues(setErrorAC(isInputError));
+    };
+
+    const setInputValues = (start: number, max: number) => {
+        dispatchToInputValues(setValuesAC({startValue: start, maxCounter: max}));
+
+    };
+
+    const settingsDisplayProps = {
+        minCounter: state.counter,
+        maxCounter: state.maxValue,
+        errorFlag: state.error,
+        setInputValues,
         setErrorFlag,
         disablingDisplayButtons,
         buttonsDisabled
     }
 
+    const displayProps = {
+        onIncHandler,
+        onResetHandler,
+        maxCounter: state.maxValue,
+        buttonsDisabled,
+        errorFlag: state.error,
+        counter: state.counter
+    }
 
     return (
         <div className="App">
             <div className="container">
                 <div className="settings_window">
-                    <SettingsDisplay
-                        // callBack={setErrorFlag}
-                        minCounter={minCounter}
-                                     maxCounter={maxCounter}
-                                     errorFlag={errorFlag}
-                                     {...SettingsDisplaySettersProps} />
+                    <SettingsDisplay {...settingsDisplayProps} />
                 </div>
                 <div className="counter_window">
-                    <Display onIncHandler={onIncHandler}
-                             onResetHandler={onResetHandler}
-                             counter={counter}
-                             maxCounter={maxCounter}
-                             errorFlag={errorFlag}
-                             buttonsDisabled={buttonsDisabled}
-                             />
+                    <Display {...displayProps} />
                 </div>
             </div>
         </div>
     );
 }
 
-export default App
+
