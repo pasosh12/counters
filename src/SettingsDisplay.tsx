@@ -1,80 +1,68 @@
 import * as React from 'react';
 import {Button} from "./Button";
-import {ChangeEvent, Dispatch, SetStateAction} from "react";
+import {ChangeEvent} from "react";
 import Input from "./Input";
-import {InputValuesState, resetCounterAC} from "./model/counter-reducer";
-
 
 type Props = {
     minCounter: number,
     maxCounter: number,
-    errorFlag:  boolean,
+    errorFlag: boolean,
     buttonsDisabled: boolean,
-    setCounter: Dispatch<SetStateAction<number>>,
-    setErrorFlag: Dispatch<SetStateAction<boolean>>,
     disablingDisplayButtons: (buttonsActive: boolean) => void,
-    // state:InputValuesState,
-    // // callBack:(isInputError: boolean)=>void,
-
+    setInputValues: (start: number, max: number) => void,
+    setErrorFlag: (isInputError: boolean) => void,
 };
 
 export const SettingsDisplay = ({
-                                    // setStartValue,
                                     maxCounter,
                                     minCounter,
                                     errorFlag,
-                                    setCounter,
+                                    setInputValues,
                                     setErrorFlag,
                                     disablingDisplayButtons,
                                     buttonsDisabled,
-
-
                                 }: Props) => {
     const [localMax, setLocalMax] = React.useState<string>(maxCounter.toString());
     const [localStart, setLocalStart] = React.useState<string>(minCounter.toString());
 
+    const validateInputs = React.useCallback(() => {
+        const lStart = Number(localStart);
+        const lMax = Number(localMax);
+        return lStart >= lMax || lStart < 0 || lMax < 0;
+    }, [localStart, localMax]);
 
+    // Only update error state when local values change
     React.useEffect(() => {
-        let lStart = Number(localStart)
-        let lMax = Number(localMax)
-        let isInputError = lStart >= lMax || lStart < 0 || lMax < 0
-        setErrorFlag(isInputError)
-        disablingDisplayButtons(Boolean(lStart) && Boolean(lMax))
-    }, [localStart, localMax, setErrorFlag]);
+        const isError = validateInputs();
+        if (isError !== errorFlag) {
+            setErrorFlag(isError);
+        }
+    }, [localStart, localMax, validateInputs, errorFlag, setErrorFlag]);
 
-    const changingValues = () => {
-        disablingDisplayButtons(true)
-        setCounter(0)
-        localStorage.removeItem('minCounter');
-        localStorage.removeItem('maxCounter');
-
-    }
-    const inputValueFiltering = (numberToFilter: string) => {
-        // Удаляем точки и запятые
+    const inputValueFiltering = React.useCallback((numberToFilter: string) => {
         let filteredValue = numberToFilter.replace(/[.,]/g, '');
-        // Удаляем ведущие нули
         filteredValue = filteredValue.replace(/^0+/, '');
-        // Если строка пустая, возвращаем '0'
         return filteredValue === '' ? '0' : filteredValue;
-    }
+    }, []);
 
-    const valuesSetterHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const inputValue = event.target.value
-        if (event.target.id === 'start') setLocalStart(inputValueFiltering(inputValue))
-        else if (event.target.id === 'max') setLocalMax(inputValueFiltering(inputValue))
-        changingValues()
-    }
+    const valuesSetterHandler = React.useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        const inputValue = event.target.value;
+        const filteredValue = inputValueFiltering(inputValue);
+
+        if (event.target.id === 'start') {
+            setLocalStart(filteredValue);
+        } else if (event.target.id === 'max') {
+            setLocalMax(filteredValue);
+        }
+        disablingDisplayButtons(true);
+    }, [inputValueFiltering, disablingDisplayButtons]);
 
     const onSetHandler = () => {
-
-        if (!errorFlag) { //error
-            // setStartValue(Number(localStart))
-            // dispatchToInputValues({type:'SET_START_VALUE', payload:Number(localStart)})
-            setCounter(Number(localStart))
-            // activateSetButton(false)
-            localStorage.setItem('minCounter', String(localStart));
-            localStorage.setItem('maxCounter', String(localMax));
-            disablingDisplayButtons(false)
+        if (!errorFlag) {
+            localStorage.setItem('minCounter', localStart);
+            localStorage.setItem('maxCounter', localMax);
+            setInputValues(Number(localMax), Number(localStart));
+            disablingDisplayButtons(false);
         }
     }
 
@@ -97,11 +85,14 @@ export const SettingsDisplay = ({
                 />
             </div>
             <div className="buttons_container">
-                <Button title={'set'}
-                        className={`button ${!errorFlag && buttonsDisabled ? '' : 'button_disabled'}`}
-                        disabled={errorFlag  && buttonsDisabled}
-                        onClick={onSetHandler}/>
+                <Button
+                    title={'set'}
+                    className={`button ${!errorFlag && buttonsDisabled ? '' : 'button_disabled'}`}
+                    disabled={errorFlag || !buttonsDisabled}
+                    onClick={onSetHandler}
+                />
             </div>
         </div>
-    )
+    );
 }
+
