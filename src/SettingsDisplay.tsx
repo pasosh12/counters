@@ -25,27 +25,27 @@ export const SettingsDisplay = ({
     const [localMax, setLocalMax] = React.useState<string>(maxCounter.toString());
     const [localStart, setLocalStart] = React.useState<string>(minCounter.toString());
 
-    const validateInputs = React.useCallback(() => {
+    const validateInputs = () => {
         const lStart = Number(localStart);
         const lMax = Number(localMax);
         return lStart >= lMax || lStart < 0 || lMax < 0;
-    }, [localStart, localMax]);
+    };
 
     // Only update error state when local values change
-    React.useEffect(() => {
-        const isError = validateInputs();
-        if (isError !== errorFlag) {
-            setErrorFlag(isError);
-        }
-    }, [localStart, localMax, validateInputs, errorFlag, setErrorFlag]);
 
-    const inputValueFiltering = React.useCallback((numberToFilter: string) => {
+    const isError = validateInputs();
+    if (isError !== errorFlag) {
+        setErrorFlag(isError);
+    }
+
+
+    const inputValueFiltering = (numberToFilter: string) => {
         let filteredValue = numberToFilter.replace(/[.,]/g, '');
         filteredValue = filteredValue.replace(/^0+/, '');
         return filteredValue === '' ? '0' : filteredValue;
-    }, []);
+    };
 
-    const valuesSetterHandler = React.useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const valuesSetterHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
         const filteredValue = inputValueFiltering(inputValue);
 
@@ -55,13 +55,13 @@ export const SettingsDisplay = ({
             setLocalMax(filteredValue);
         }
         disablingDisplayButtons(true);
-    }, [inputValueFiltering, disablingDisplayButtons]);
+    };
 
     const onSetHandler = () => {
         if (!errorFlag) {
             localStorage.setItem('minCounter', localStart);
             localStorage.setItem('maxCounter', localMax);
-            setInputValues(Number(localMax), Number(localStart));
+            setInputValues(Number(localStart), Number(localMax));
             disablingDisplayButtons(false);
         }
     }

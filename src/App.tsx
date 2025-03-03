@@ -1,56 +1,51 @@
-import React, {useReducer, useCallback, useMemo, useState} from 'react';
+import React, {useReducer, useState} from 'react';
 import './App.css';
 import {Display} from "./Display";
 import {SettingsDisplay} from "./SettingsDisplay";
 import {
     counterReducer,
-    incCounterAC,
+    incCounterAC, resetCounterAC,
     setErrorAC,
-    setMaxCounterAC,
-    setStartCounterAC
+    setValuesAC,
 } from "./model/counter-reducer";
 
 export const App = () => {
-    const [initialState] = useState(() => ({
-        minCounter: Number(localStorage.getItem('minCounter')) || 0,
-        maxCounter: Number(localStorage.getItem('maxCounter')) || 5
-    }));
 
     const [buttonsDisabled, setButtonsDisabling] = useState<boolean>(true);
 
     const [state, dispatchToInputValues] = useReducer(counterReducer, {
-        counter: 0,
-        maxValue: 5,
+        counter: Number(localStorage.getItem('minCounter')) || 0,
+        startValue: Number(localStorage.getItem('minCounter')) || 0,
+        maxValue: Number(localStorage.getItem('maxCounter')) || 5,
         error: false
     });
 
     const onIncHandler = () => {
-            if (state.counter < initialState.maxCounter) {
-                // debugger
-                dispatchToInputValues(incCounterAC());
-            }
+        if (state.counter < state.maxValue) {
+            dispatchToInputValues(incCounterAC());
         }
+    }
 
     const onResetHandler = () => {
-            dispatchToInputValues(setStartCounterAC(initialState.minCounter));
-        }
+        dispatchToInputValues(resetCounterAC(state.startValue));
+    }
 
     const disablingDisplayButtons = (buttonsActive: boolean) => {
-            setButtonsDisabling(buttonsActive);
-        }
+        setButtonsDisabling(buttonsActive);
+    }
 
-    const setErrorFlag = useCallback((isInputError: boolean) => {
+    const setErrorFlag = (isInputError: boolean) => {
         dispatchToInputValues(setErrorAC(isInputError));
-    }, []);
+    };
 
-    const setInputValues = useCallback((start: number, max: number) => {
-        dispatchToInputValues(setStartCounterAC(start));
-        dispatchToInputValues(setMaxCounterAC(max));
-    }, []);
+    const setInputValues = (start: number, max: number) => {
+        dispatchToInputValues(setValuesAC({startValue: start, maxCounter: max}));
+
+    };
 
     const settingsDisplayProps = {
-        minCounter: initialState.minCounter,
-        maxCounter: initialState.maxCounter,
+        minCounter: state.counter,
+        maxCounter: state.maxValue,
         errorFlag: state.error,
         setInputValues,
         setErrorFlag,
@@ -61,7 +56,7 @@ export const App = () => {
     const displayProps = {
         onIncHandler,
         onResetHandler,
-        maxCounter: initialState.maxCounter,
+        maxCounter: state.maxValue,
         buttonsDisabled,
         errorFlag: state.error,
         counter: state.counter
