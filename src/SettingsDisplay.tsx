@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Button} from "./Button";
 import {ChangeEvent, Dispatch, SetStateAction} from "react";
 import Input from "./Input";
-import {InputValuesState, resetCounterAC} from "./model/counter-reducer";
 
 
 type Props = {
@@ -13,8 +12,6 @@ type Props = {
     setCounter: Dispatch<SetStateAction<number>>,
     setErrorFlag: Dispatch<SetStateAction<boolean>>,
     disablingDisplayButtons: (buttonsActive: boolean) => void,
-    // state:InputValuesState,
-    // // callBack:(isInputError: boolean)=>void,
 
 };
 
@@ -68,10 +65,8 @@ export const SettingsDisplay = ({
     const onSetHandler = () => {
 
         if (!errorFlag) { //error
-            // setStartValue(Number(localStart))
-            // dispatchToInputValues({type:'SET_START_VALUE', payload:Number(localStart)})
+
             setCounter(Number(localStart))
-            // activateSetButton(false)
             localStorage.setItem('minCounter', String(localStart));
             localStorage.setItem('maxCounter', String(localMax));
             disablingDisplayButtons(false)

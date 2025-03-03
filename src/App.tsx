@@ -3,7 +3,6 @@ import './App.css';
 import {Display} from "./Display";
 import {SettingsDisplay} from "./SettingsDisplay";
 import {useState} from "react";
-import {counterReducer, incCounterAC, resetCounterAC, setErrorAC} from "./model/counter-reducer";
 
 function App() {
     const minCounter: number = Number(localStorage.getItem('minCounter')) || 0
@@ -11,33 +10,22 @@ function App() {
 
     const [buttonsDisabled, setButtonsDisabling] = useState<boolean>(true);
 
-    const [state,dispatchToInputValues]=useReducer(counterReducer,
-        {counter:minCounter, maxValue:maxCounter,error:false}
-    )
-    // const dispatch =      dispatchToInputValues
-    // const [errorFlag, dispatchToInputValues]=useReducer(counterReducer,{})
     const [errorFlag, setErrorFlag] = useState<boolean>(false);
     const [counter, setCounter] = useState<number>(0);
 
 
     const onIncHandler = () => {
-        if (state.counter < maxCounter){
-            // dispatchToInputValues(incCounterAC())
+        if (minCounter < maxCounter){
             setCounter(counter + 1);
         }
     }
     const onResetHandler = () => {
-        // dispatchToInputValues(resetCounterAC())
         setCounter(minCounter)
     }
 
     const disablingDisplayButtons = (buttonsActive: boolean) => {
          setButtonsDisabling(buttonsActive)
     }
-
-    // const setErrorFlag=(isInputError:boolean)=>{
-    //     dispatch(setErrorAC(isInputError))
-    // }
     const SettingsDisplaySettersProps = {
 
         setCounter,
