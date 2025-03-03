@@ -13,7 +13,7 @@ function App() {
 
     const [state,dispatchToInputValues]=useReducer(counterReducer,
         {counter:minCounter, maxValue:maxCounter,error:false}
-    )
+    )dasdwdas
     // const dispatch =      dispatchToInputValues
     // const [errorFlag, dispatchToInputValues]=useReducer(counterReducer,{})
     const [errorFlag, setErrorFlag] = useState<boolean>(false);
