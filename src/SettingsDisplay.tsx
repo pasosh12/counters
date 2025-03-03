@@ -2,39 +2,44 @@ import * as React from 'react';
 import {Button} from "./Button";
 import {ChangeEvent, Dispatch, SetStateAction} from "react";
 import Input from "./Input";
+import {InputValuesState, resetCounterAC} from "./model/counter-reducer";
 
 
 type Props = {
-    startValue: number,
-    maxValue: number,
-    errorFlag: boolean,
-    setStartValue: Dispatch<SetStateAction<number>>,
-    setMaxValue: Dispatch<SetStateAction<number>>,
+    minCounter: number,
+    maxCounter: number,
+    errorFlag:  boolean,
+    buttonsDisabled: boolean,
     setCounter: Dispatch<SetStateAction<number>>,
     setErrorFlag: Dispatch<SetStateAction<boolean>>,
     disablingDisplayButtons: (buttonsActive: boolean) => void,
+    // state:InputValuesState,
+    // // callBack:(isInputError: boolean)=>void,
+
 };
 
 export const SettingsDisplay = ({
-                                    setStartValue,
-                                    maxValue,
-                                    startValue,
+                                    // setStartValue,
+                                    maxCounter,
+                                    minCounter,
                                     errorFlag,
                                     setCounter,
                                     setErrorFlag,
                                     disablingDisplayButtons,
+                                    buttonsDisabled,
+
+
                                 }: Props) => {
-    const [localMax, setLocalMax] = React.useState<string>(maxValue.toString());
-    const [localStart, setLocalStart] = React.useState<string>(startValue.toString());
-    const [isSetButtonActive, activateSetButton] = React.useState<boolean>(true);
+    const [localMax, setLocalMax] = React.useState<string>(maxCounter.toString());
+    const [localStart, setLocalStart] = React.useState<string>(minCounter.toString());
+
 
     React.useEffect(() => {
         let lStart = Number(localStart)
         let lMax = Number(localMax)
         let isInputError = lStart >= lMax || lStart < 0 || lMax < 0
         setErrorFlag(isInputError)
-        activateSetButton(!isInputError)
-
+        disablingDisplayButtons(Boolean(lStart) && Boolean(lMax))
     }, [localStart, localMax, setErrorFlag]);
 
     const changingValues = () => {
@@ -63,9 +68,10 @@ export const SettingsDisplay = ({
     const onSetHandler = () => {
 
         if (!errorFlag) { //error
-            setStartValue(Number(localStart))
+            // setStartValue(Number(localStart))
+            // dispatchToInputValues({type:'SET_START_VALUE', payload:Number(localStart)})
             setCounter(Number(localStart))
-            activateSetButton(false)
+            // activateSetButton(false)
             localStorage.setItem('minCounter', String(localStart));
             localStorage.setItem('maxCounter', String(localMax));
             disablingDisplayButtons(false)
@@ -80,20 +86,20 @@ export const SettingsDisplay = ({
                     title={'max value'}
                     value={localMax}
                     id={'max'}
-                    valuesSetterHandler={valuesSetterHandler}
+                    onChange={valuesSetterHandler}
                 />
                 <Input
                     errorFlag={errorFlag}
                     title={'min value'}
                     value={localStart}
                     id={'start'}
-                    valuesSetterHandler={valuesSetterHandler}
+                    onChange={valuesSetterHandler}
                 />
             </div>
             <div className="buttons_container">
                 <Button title={'set'}
-                        className={`button ${isSetButtonActive ? '' : 'button_disabled'}`}
-                        disabled={!isSetButtonActive}
+                        className={`button ${!errorFlag && buttonsDisabled ? '' : 'button_disabled'}`}
+                        disabled={errorFlag  && buttonsDisabled}
                         onClick={onSetHandler}/>
             </div>
         </div>

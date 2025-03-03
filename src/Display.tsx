@@ -5,7 +5,7 @@ type Props = {
     counter: number;
     maxCounter: number;
     buttonsDisabled: boolean;
-    errorFlag: boolean;
+    errorFlag: string| null | boolean;
     onIncHandler: () => void;
     onResetHandler: () => void;
 };
@@ -57,6 +57,5 @@ export const Display = ({
                     onClick={onResetHandler} disabled={(buttonsDisabled || resetDisabled)}/>
             </div>
         </div>
-    )
-        ;
+    );
 };
